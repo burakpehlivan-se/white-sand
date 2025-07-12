@@ -1,0 +1,268 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap / Kaydol - White Sands</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Sadece login.html sayfası için özel stiller */
+        body {
+            background-image: url('images/login-background.jpg'); /* Arka plan resmi ekleyin */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Sayfanın tüm yüksekliğini kaplamasını sağlar */
+            margin: 0; /* Boşlukları kaldırır */
+            padding: 20px; /* İçeriğin kenarlara yapışmasını engeller */
+            box-sizing: border-box;
+        }
+
+        /* login.html için form-box'ı ortala ve bir arkaplan ver */
+        .form-box {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            width: 380px; /* Sabit genişlik, isteğe göre ayarla */
+            max-width: 90%; /* Küçük ekranlarda taşmayı engelle */
+            position: relative; /* İçindeki input-group'ların konumlandırılması için */
+            overflow: hidden; /* Form geçişleri için taşmayı gizle */
+        }
+
+        /* .modal-content ve .modal-form-box stillerini .form-box'a birleştirin */
+        /* Daha önce modal-content ve modal-form-box'a uygulanan stiller buraya taşınabilir */
+
+        /* Input group ve buton geçişleri için */
+        .input-group {
+            position: absolute; /* Formların üst üste gelmesi için */
+            width: 85%;
+            left: 50px; /* Başlangıç konumu */
+            transition: left 0.5s, opacity 0.5s ease-in-out, max-height 0.7s ease-in-out;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            pointer-events: none;
+            top: 130px; /* Buton kutusunun altına yerleştirme */
+        }
+
+        .input-group.active {
+            opacity: 1;
+            max-height: 800px; /* Yeterince büyük bir değer */
+            pointer-events: auto;
+            position: relative; /* Sayfa akışına geri katılır */
+            left: 0; /* Sayfada ortalanması için */
+        }
+
+        /* Formların başlıklarını modalın içine almadığımız için, doğrudan form-box içinde yer alacaklar */
+        .logo-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo-area h2 {
+            color: #ff105f;
+            margin-bottom: 5px;
+            font-size: 2.2em;
+        }
+        .logo-area p {
+            color: #555;
+            font-size: 1em;
+        }
+
+        /* Button Box ve Toggle Butonları */
+        .button-box {
+            width: 280px;
+            margin: 20px auto 35px;
+            position: relative;
+            box-shadow: 0 0 10px 9px rgba(0, 0, 0, 0.1);
+            border-radius: 30px;
+        }
+
+        .toggle-btn {
+            padding: 10px 30px;
+            cursor: pointer;
+            background: transparent;
+            border: 0;
+            outline: none;
+            position: relative;
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        #btn {
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 140px;
+            height: 100%;
+            background: linear-gradient(to right, #ff105f, #ffad06);
+            border-radius: 30px;
+            transition: 0.5s;
+        }
+
+        /* Form içeriklerinin düzeni */
+        .input-with-icon {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 18px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            background-color: #f9f9f9;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .input-field:focus {
+            border-color: #ff105f;
+        }
+
+        .checkbox {
+            margin: 10px 10px 30px 0;
+            display: inline-block; /* Checkbox ve yazı aynı satırda kalsın */
+        }
+
+        .input-group span {
+            color: #777;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px 30px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 20px;
+            background: linear-gradient(to right, #ff105f, #ffad06);
+            border: 0;
+            outline: none;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            transition: 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 163, 6, 0.4);
+        }
+
+        .forgot-password {
+            display: block;
+            margin-top: 10px;
+            color: #ff105f;
+            text-decoration: none;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .form-box {
+                padding: 20px;
+            }
+            .input-group {
+                left: 20px; /* Daha dar ekranlar için ayar */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-box">
+        <div class="logo-area">
+            <h2>White Sands</h2>
+            <p>Giriş Yap veya Kaydol</p>
+        </div>
+
+        <div class="button-box">
+            <div id="btn"></div>
+            <button type="button" class="toggle-btn" onclick="login()">Giriş Yap</button>
+            <button type="button" class="toggle-btn" onclick="register()">Kaydol</button>
+        </div>
+
+        <form id="login" class="input-group">
+            <div class="input-with-icon">
+                <i class="fa fa-user"></i>
+                <input type="text" class="input-field" placeholder="Kullanıcı Adı veya E-posta" required>
+            </div>
+            <div class="input-with-icon">
+                <i class="fa fa-lock"></i>
+                <input type="password" class="input-field" placeholder="Şifre" required>
+            </div>
+            <input type="checkbox" class="checkbox"><span>Beni Hatırla</span>
+            <button type="submit" class="submit-btn">Giriş Yap</button>
+            <a href="#" class="forgot-password">Şifremi Unuttum?</a>
+        </form>
+
+        <form id="register" class="input-group">
+            <div class="input-with-icon">
+                <i class="fa fa-user"></i>
+                <input type="text" class="input-field" placeholder="Kullanıcı Adı" required>
+            </div>
+            <div class="input-with-icon">
+                <i class="fa fa-envelope"></i>
+                <input type="email" class="input-field" placeholder="E-posta" required>
+            </div>
+            <div class="input-with-icon">
+                <i class="fa fa-lock"></i>
+                <input type="password" class="input-field" placeholder="Şifre" required>
+            </div>
+            <div class="input-with-icon">
+                <i class="fa fa-lock"></i>
+                <input type="password" class="input-field" placeholder="Şifre Tekrar" required>
+            </div>
+            <input type="checkbox" class="checkbox"><span>Hizmet Şartlarını Kabul Ediyorum</span>
+            <button type="submit" class="submit-btn">Kaydol</button>
+        </form>
+    </div>
+
+    <script>
+        var x = document.getElementById("login");
+        var y = document.getElementById("register");
+        var z = document.getElementById("btn");
+
+        function register() {
+            x.style.left = "-400px"; // Giriş formunu sola kaydır
+            y.style.left = "50px";   // Kayıt formunu ortaya getir
+            z.style.left = "140px";  // Buton kaydırıcısını Kaydol'a getir
+            x.classList.remove("active");
+            y.classList.add("active");
+        }
+
+        function login() {
+            x.style.left = "50px";   // Giriş formunu ortaya getir
+            y.style.left = "450px";  // Kayıt formunu sağa kaydır
+            z.style.left = "0";      // Buton kaydırıcısını Giriş Yap'a getir
+            y.classList.remove("active");
+            x.classList.add("active");
+        }
+
+        // Sayfa yüklendiğinde varsayılan olarak giriş formunu göster
+        document.addEventListener('DOMContentLoaded', function() {
+            login(); // Varsayılan olarak login formunu aktif et
+            // Eğer URL'de bir "kaydol" parametresi varsa direkt kaydol formunu açabilirsiniz.
+            // Örneğin: if (window.location.search.includes('?action=register')) { register(); }
+        });
+    </script>
+
+</body>
+</html>

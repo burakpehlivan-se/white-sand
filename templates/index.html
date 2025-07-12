@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>White Sands - Hayalindeki Tatili Bul</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Lokasyon etiketi stili */
+        .location-badge {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+        }
+        
+        /* Ana sayfa butonlarının stili */
+        .hero-main-content {
+            background: transparent;
+            padding: 50px 20px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+        }
+        
+        .hero-text {
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        }
+        
+        .hero-text h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        
+        .hero-text p {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .hero-button {
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+        }
+        
+        .hero-button i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .primary-button {
+            background: linear-gradient(to right, #ff105f, #ffad06);
+            color: white;
+            border: none;
+        }
+        
+        .primary-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 16, 95, 0.4);
+        }
+        
+        .secondary-button {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        .location-badge:hover {
+            background-color: #ff105f;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(255, 16, 95, 0.4);
+        }
+        
+        .location-badge i {
+            margin-right: 5px;
+            color: #ff105f;
+        }
+        
+        .location-badge:hover i {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="slideshow-container"
+        data-image-url-0="{% static 'images/slideShow/china.jpg' %}" data-location-0="Çin"
+        data-image-url-1="{% static 'images/slideShow/france.jpg' %}" data-location-1="Fransa"
+        data-image-url-2="{% static 'images/slideShow/india.jpg' %}" data-location-2="Hindistan"
+        data-image-url-3="{% static 'images/slideShow/egypt.jpg' %}" data-location-3="Mısır"
+        data-image-url-4="{% static 'images/slideShow/greece.jpg' %}" data-location-4="Yunanistan"
+        data-image-url-5="{% static 'images/slideShow/china2.jpg' %}" data-location-5="Çin"
+        data-image-url-6="{% static 'images/slideShow/turkey.jpg' %}" data-location-6="Türkiye"
+        data-image-url-7="{% static 'images/slideShow/usa.jpg' %}" data-location-7="Amerika"
+        data-image-url-8="{% static 'images/slideShow/morocco.jpg' %}" data-location-8="Fas"
+        data-image-url-9="{% static 'images/slideShow/portugal.jpg' %}" data-location-9="Portekiz"
+        data-image-url-10="{% static 'images/slideShow/thailand.jpg' %}" data-location-10="Tayland"
+        data-image-url-11="{% static 'images/slideShow/vietnam.jpg' %}" data-location-11="Vietnam"
+        data-image-url-12="{% static 'images/slideShow/sri lanka.jpg' %}" data-location-12="Sri Lanka"
+    >
+        <div class="slide-image active-slide"></div>
+        <div class="slide-image next-slide"></div>
+        <div class="location-badge" id="locationBadge">
+            <i class="fas fa-map-marker-alt"></i> <span id="locationName">Türkiye</span>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <div class="logo">White Sands</div>
+        <nav class="main-nav">
+            <a href="{% url 'about' %}" class="nav-btn">
+                <i class="fas fa-info-circle"></i> Hakkımızda
+            </a>
+        </nav>
+    </header>
+
+    <main class="hero-main-content">
+        <div class="hero-text">
+            <h1>Hayalindeki Tatili Keşfet!</h1>
+            <p>Sana en uygun tatil yerini bulmak için hemen keşfet.</p>
+        </div>
+        <div class="action-buttons">
+            <a href="{% url 'recommendation_quiz' %}" class="hero-button primary-button">
+                <i class="fas fa-compass"></i> Tatilini Bul!
+            </a>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slideshow = document.querySelector('.slideshow-container');
+            const slides = {
+                active: document.querySelector('.active-slide'),
+                next: document.querySelector('.next-slide')
+            };
+            const locationBadge = document.getElementById('locationBadge');
+            const locationName = document.getElementById('locationName');
+            
+            let currentImageIndex = 0;
+            const imageUrls = [];
+            const locationNames = [];
+            
+            // Tüm data-image-url-* ve data-location-* özelliklerini al
+            for (let i = 0; i < 20; i++) {
+                const url = slideshow.getAttribute(`data-image-url-${i}`);
+                const location = slideshow.getAttribute(`data-location-${i}`);
+                if (url && location) {
+                    imageUrls.push(url);
+                    locationNames.push(location);
+                }
+            }
+            
+            if (imageUrls.length === 0) {
+                console.log('Resim URL\'leri bulunamadı');
+                return;
+            }
+            
+            console.log(`Slayt gösterisi başlatılıyor: ${imageUrls.length} resim bulundu`);
+            
+            // Lokasyon bağlantısını güncelle
+            function updateLocationBadge() {
+                const currentLocation = locationNames[currentImageIndex];
+                locationName.textContent = currentLocation;
+                
+                // Tıklama olayını temizleyip tekrar ekle
+                locationBadge.onclick = function() {
+                    window.open(`https://www.google.com/search?q=${encodeURIComponent(currentLocation + ' turistik yerler')}`, '_blank');
+                };
+            }
+            
+            // İlk resmi göster
+            slides.active.style.backgroundImage = `url('${imageUrls[0]}')`;            
+            slides.active.style.opacity = 1;
+            updateLocationBadge();
+            
+            // Resim değiştirme işlevi
+            function changeSlide() {
+                currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+                
+                // Bir sonraki slaytı hazırla
+                slides.next.style.backgroundImage = `url('${imageUrls[currentImageIndex]}')`;                
+                
+                // Geçişi yap
+                slides.next.style.opacity = 1;
+                slides.active.style.opacity = 0;
+                
+                // Değişkenleri değiştir
+                const temp = slides.active;
+                slides.active = slides.next;
+                slides.next = temp;
+                
+                // Lokasyon bilgisini güncelle
+                updateLocationBadge();
+            }
+            
+            // 8 saniyede bir değiştir
+            setInterval(changeSlide, 4000);
+        });
+    </script>
+</body>
+</html>

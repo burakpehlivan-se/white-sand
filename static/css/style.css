@@ -1,0 +1,1236 @@
+/* Genel Ayarlar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+
+/* Sayfa içeriği ana elementinin esnek olması */
+main {
+    flex: 1; /* main içeriğinin kullanılabilir alanı doldurmasını sağlar */
+}
+
+/* Slideshow Container (Sadece index.html için geçerli olacak şekilde düşünüldü) */
+.slideshow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.slide-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0; /* Başlangıçta gizli */
+    transition: opacity 2s ease-in-out; /* 2 saniyelik geçiş süresi */
+    filter: brightness(0.5); /* Resimleri biraz karartarak metnin daha iyi okunmasını sağlar */
+}
+
+.slide-image.active-slide {
+    opacity: 1; /* Aktif slayt görünür */
+}
+
+/* Loading spinner animasyonu */
+.loading-spinner {
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Üst Navigasyon (Index.html'deki özel başlık) */
+.main-header {
+    position: absolute; /* Fixed yerine absolute kullandım, sayfa kaydırıldığında sabit kalması için */
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+
+.main-header .logo {
+    font-size: 2em;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-btn {
+    background: linear-gradient(to right, #ff105f, #ffad06);
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-decoration: none; /* Alt çizgiyi kaldırır */
+}
+
+.nav-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Ana İçerik - Ortadaki Arama Bölümü (Sadece index.html için) */
+.hero-main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    color: #fff;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+    z-index: 5;
+    position: relative;
+    /* overflow: auto; /* Eğer içerik sığmazsa kaydırma çubuğu çıksın */
+}
+
+.hero-text h1 {
+    font-size: 4em;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.hero-text p {
+    font-size: 1.5em;
+    margin-bottom: 40px;
+}
+
+.main-search-bar {
+    display: flex;
+    justify-content: center;
+    width: 60%;
+    max-width: 700px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50px;
+    padding: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.main-search-bar input {
+    flex-grow: 1;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 40px;
+    outline: none;
+    font-size: 1.2em;
+    background: transparent;
+    color: #333;
+}
+
+.main-search-bar button {
+    background: linear-gradient(to right, #ffad06, #ff105f);
+    color: #fff;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: 600;
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.main-search-bar button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 163, 6, 0.4);
+}
+
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #ff105f;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+.input-with-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 18px;
+}
+
+
+
+
+
+.checkbox {
+    margin: 10px 10px 30px 0;
+}
+
+.input-group span {
+    color: #777;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.forgot-password {
+    display: block;
+    margin-top: 10px;
+    color: #ff105f;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: #ffad06;
+}
+
+/* Navbar Stilleri */
+.navbar {
+    background-color: transparent;
+    backdrop-filter: blur(5px);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: none;
+    position: sticky; /* Sayfayı aşağı kaydırdığınızda sabit kalır */
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .logo {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #ff105f;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.navbar nav ul {
+    list-style: none;
+    display: flex;
+}
+
+.navbar nav ul li {
+    margin-left: 30px;
+}
+
+.navbar nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.navbar nav ul li a i {
+margin-right: 8px;
+font-size: 1.1em;
+}
+
+.navbar nav ul li a.active,
+.navbar nav ul li a:hover {
+background-color: rgba(255, 255, 255, 0.2);
+color: #ff105f;
+text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.navbar nav ul li .logout-btn {
+    background: #dc3545;
+    color: #fff;
+    text-shadow: none;
+}
+
+.navbar nav ul li .logout-btn:hover {
+    background: #c82333;
+    box-shadow: 0 3px 10px rgba(220, 53, 69, 0.3);
+}
+
+/* Dashboard ve Genel İçerik Stilleri */
+/* .dashboard-content, .detail-content, .profile-content, .about-page-content */
+.dashboard-content, .detail-content, .profile-content, .about-page-content {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Hakkımızda Sayfası Stilleri Başlangıç --- */
+.about-hero {
+    background-image: url('images/about-hero-bg.jpg'); /* Resim yolunuzu buraya ekleyin */
+    background-size: cover;
+    background-position: center;
+    color: white; /* Metin rengi */
+    text-align: center;
+    padding: 100px 20px;
+    position: relative;
+    overflow: hidden; /* Overlay için */
+    min-height: 400px; /* Hero alanı için minimum yükseklik */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0; /* Üstteki margin'i kaldırdım */
+    border-radius: 0; /* Köşeli olmasını sağladım */
+    box-shadow: none; /* Shadow'u kaldırdım */
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Hafif karartma */
+    z-index: 1;
+}
+
+.about-hero .hero-content {
+    position: relative;
+    z-index: 2; /* İçerik overlay'in üstünde olsun */
+    max-width: 800px;
+}
+
+.about-hero h1 {
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    font-weight: 700;
+    color: #fff; /* Başlık rengi */
+}
+
+.about-hero p {
+    font-size: 1.3em;
+    line-height: 1.6;
+    color: #f0f0f0; /* Paragraf rengi */
+}
+
+/* Genel Kapsayıcı */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Bölüm Başlıkları (Hikayemiz, Değerlerimiz, Ekibimiz) */
+section h2 {
+    font-size: 2.8em;
+    color: #333;
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(to right, #ff105f, #ffad06);
+    border-radius: 2px;
+}
+
+/* Hikayemiz Bölümü */
+.our-story {
+    padding: 60px 0;
+    background-color: #fcfcfc;
+}
+
+.story-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.story-item {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.story-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.story-item h3 {
+    font-size: 1.8em;
+    color: #ff105f;
+    margin-bottom: 15px;
+}
+
+.story-item p {
+    font-size: 1.05em;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Değerlerimiz Bölümü */
+.our-values {
+    padding: 60px 0;
+    background-color: #f0f2f5;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.value-item {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.value-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.value-item i {
+    font-size: 3.5em;
+    color: #ffad06;
+    margin-bottom: 20px;
+}
+
+.value-item h3 {
+    font-size: 1.6em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.value-item p {
+    font-size: 0.95em;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Ekibimiz Bölümü */
+.team-section {
+    padding: 60px 0;
+    background-color: #fcfcfc;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    justify-content: center;
+}
+
+.team-member {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.team-member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 4px solid #ffad06;
+    box-shadow: 0 0 0 5px rgba(255, 173, 6, 0.3);
+}
+
+.team-member h3 {
+    font-size: 1.6em;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.team-member p {
+    font-size: 1em;
+    color: #ff105f;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.social-links a {
+    color: #666;
+    font-size: 1.5em;
+    margin: 0 10px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-links a:hover {
+    color: #ffad06;
+    transform: translateY(-3px);
+}
+/* --- Hakkımızda Sayfası Stilleri Son --- */
+
+
+/* --- Footer Stilleri Başlangıç --- */
+.main-footer {
+    background-color: #333;
+    color: #f8f8f8;
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: auto; /* Footer'ı alta sabitlemek için */
+}
+
+.main-footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.main-footer p {
+    font-size: 0.9em;
+    margin: 0;
+}
+
+.main-footer .footer-links a {
+    color: #f8f8f8;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 0.95em;
+    transition: color 0.3s ease;
+}
+
+.main-footer .footer-links a:hover {
+    color: #ffad06;
+}
+
+.main-footer .social-icons a {
+    color: #f8f8f8;
+    font-size: 1.3em;
+    margin: 0 10px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.main-footer .social-icons a:hover {
+    color: #ff105f;
+    transform: translateY(-3px);
+}
+/* --- Footer Stilleri Son --- */
+
+
+/* Responsive Düzenlemeler */
+@media (max-width: 768px) {
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+    .main-header .logo {
+        margin-bottom: 10px;
+        font-size: 1.8em;
+    }
+    .auth-nav {
+        width: 100%;
+        text-align: right;
+    }
+
+    .hero-text h1 {
+        font-size: 2.5em;
+    }
+    .hero-text p {
+        font-size: 1.2em;
+    }
+    .main-search-bar {
+        width: 90%;
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+    }
+    .main-search-bar input,
+    .main-search-bar button {
+        width: 100%;
+    }
+    .main-search-bar button {
+        padding: 12px 25px;
+        font-size: 1.1em;
+    }
+
+
+    /* Navbar Responsive */
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+    .navbar nav ul {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 15px;
+    }
+    .navbar nav ul li {
+        margin-left: 0;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    .navbar nav ul li a {
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Hakkımızda Sayfası Responsive */
+    .about-hero h1 {
+        font-size: 2.5em;
+    }
+    .about-hero p {
+        font-size: 1.1em;
+    }
+    section h2 {
+        font-size: 2em;
+        margin-bottom: 30px;
+    }
+    .story-grid, .values-grid, .team-grid {
+        grid-template-columns: 1fr; /* Küçük ekranlarda tek sütun */
+    }
+    .story-item, .value-item, .team-member {
+        padding: 20px;
+    }
+
+    /* Footer Responsive */
+    .main-footer .footer-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .main-footer .footer-links a {
+        margin: 0;
+    }
+}
+
+
+/* Quiz Container ve Genel Stiller */
+.quiz-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 70px); /* Navbar yüksekliğini düşürdüm */
+    padding: 20px;
+    background-color: #f0f2f5;
+}
+
+.quiz-box {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 90%;
+    max-width: 700px;
+    text-align: center;
+    position: relative;
+    overflow: hidden; /* Adım geçişlerinde taşmayı gizler */
+}
+
+.quiz-box h2 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.quiz-progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.quiz-progress-bar .progress {
+    height: 100%;
+    background: linear-gradient(to right, #ff105f, #ffad06);
+    border-radius: 4px;
+    transition: width 0.5s ease-in-out;
+}
+
+.quiz-steps {
+    position: relative;
+    min-height: 250px; /* Adımların yüksekliği sabit kalsın diye */
+}
+
+.quiz-step {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    pointer-events: none; /* Tıklama olaylarını engeller */
+    transform: translateX(100%); /* Başlangıçta sağda */
+    transition: all 0.5s ease-in-out;
+}
+
+.quiz-step.active-step {
+    opacity: 1;
+    pointer-events: auto; /* Tıklama olaylarına izin verir */
+    position: relative; /* Kutu içindeki akışa katılması için */
+    transform: translateX(0); /* Ortada */
+}
+
+.quiz-step h3 {
+    font-size: 1.8em;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+.option-btn {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px 15px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.option-btn i {
+    font-size: 2.5em;
+    color: #ffad06;
+}
+
+.option-btn:hover {
+    border-color: #ff105f;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.option-btn.selected {
+    background: linear-gradient(to right, #ff105f, #ffad06);
+    color: #fff;
+    border-color: #ff105f;
+    box-shadow: 0 4px 15px rgba(255, 163, 6, 0.3);
+}
+
+.option-btn.selected i {
+    color: #fff;
+}
+
+/* Checkbox Seçenekleri İçin */
+.checkbox-options {
+    grid-template-columns: 1fr; /* Tek sütunlu olsun */
+}
+
+.option-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 10px; /* Checkboxlar arası boşluk */
+}
+
+.option-checkbox input[type="checkbox"] {
+    margin-right: 15px;
+    transform: scale(1.5); /* Checkbox'ı büyüt */
+    accent-color: #ff105f; /* Checkbox rengi */
+}
+
+.option-checkbox i {
+    font-size: 1.5em;
+    color: #ffad06;
+    margin-right: 10px;
+}
+
+.option-checkbox:hover {
+    border-color: #ff105f;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.option-checkbox input[type="checkbox"]:checked + i {
+    color: #ff105f;
+}
+
+/* Navigasyon butonları */
+.quiz-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.prev-step-btn, .next-step-btn {
+    background: linear-gradient(to right, #ffad06, #ff105f);
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.prev-step-btn:hover, .next-step-btn:hover, .start-over-btn:hover, .view-detail-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Sayfa geçişlerinde buton gizleme */
+.prev-step-btn[style*="display: none"],
+.next-step-btn[style*="display: none"] {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Sonuç Ekranı Stilleri */
+.result-step {
+    text-align: center;
+}
+
+#recommendedVacation {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.recommended-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#recommendedVacation h4 {
+    font-size: 1.6em;
+    color: #ff105f;
+    margin-bottom: 10px;
+}
+
+#recommendedVacation p {
+    font-size: 1.1em;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.view-detail-btn, .start-over-btn {
+    background: linear-gradient(to right, #ffad06, #ff105f);
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: 0.3s ease;
+    display: inline-flex; /* yan yana durması için */
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-decoration: none; /* Link olduğu için */
+    margin: 10px; /* Butonlar arası boşluk */
+}
+
+.start-over-btn {
+    background: #6c757d; /* Gri ton */
+}
+
+.start-over-btn:hover {
+    background: #5a6268;
+}
+
+/* Responsive Düzenlemeler */
+@media (max-width: 768px) {
+    .quiz-box {
+        padding: 25px;
+    }
+    .quiz-box h2 {
+        font-size: 2em;
+    }
+    .quiz-step h3 {
+        font-size: 1.5em;
+    }
+    .options-grid {
+        grid-template-columns: 1fr; /* Küçük ekranlarda tek sütun */
+    }
+    .option-btn, .option-checkbox {
+        padding: 15px 10px;
+        font-size: 1em;
+    }
+    .option-btn i {
+        font-size: 2em;
+    }
+    .quiz-navigation {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .prev-step-btn, .next-step-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Dashboard İçerik Stilleri */
+.dashboard-content {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-content h1 {
+    font-size: 2.8em;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Dashboard Arama Çubuğu */
+.search-bar.dashboard-search {
+    display: flex;
+    margin: 20px auto 30px;
+    width: 80%;
+    max-width: 800px;
+    background-color: #f0f2f5;
+    border-radius: 50px;
+    padding: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.search-bar.dashboard-search input {
+    flex-grow: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 40px;
+    outline: none;
+    font-size: 1.1em;
+    background: transparent;
+    color: #333;
+}
+
+.search-bar.dashboard-search button {
+    background: linear-gradient(to right, #ffad06, #ff105f);
+    color: #fff;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-bar.dashboard-search button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 163, 6, 0.4);
+}
+
+/* Filtreler */
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta gelmesi için */
+}
+
+.filters select {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    color: #555;
+    background-color: #f9f9f9;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.filters select:focus {
+    border-color: #ff105f;
+}
+
+.apply-filters-btn {
+    background: #4CAF50; /* Yeşil buton */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.apply-filters-btn:hover {
+    background: #45a049;
+    box-shadow: 0 3px 10px rgba(76, 175, 80, 0.4);
+}
+
+/* Tatil Kartları */
+.vacation-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    justify-content: center;
+}
+
+.vacation-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.vacation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.vacation-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.vacation-card .card-info {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.vacation-card h3 {
+    font-size: 1.5em;
+    color: #ff105f;
+    margin-bottom: 10px;
+}
+
+.vacation-card p {
+    font-size: 0.95em;
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.5;
+    flex-grow: 1; /* Açıklamanın uzunluğuna göre kartı esnetir */
+}
+
+.vacation-card .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.vacation-card .price {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #ffad06;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.vacation-card .price i {
+    font-size: 0.9em;
+}
+
+.vacation-card .detail-btn {
+    background: linear-gradient(to right, #ffad06, #ff105f);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.95em;
+    font-weight: 600;
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.vacation-card .detail-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(255, 163, 6, 0.3);
+}
+
+/* Responsive Düzenlemeler */
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 20px 15px;
+    }
+    .dashboard-content h1 {
+        font-size: 2em;
+    }
+    .search-bar.dashboard-search {
+        width: 95%;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+    .search-bar.dashboard-search input,
+    .search-bar.dashboard-search button {
+        width: 100%;
+    }
+    .filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .filters select,
+    .apply-filters-btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    .vacation-cards {
+        grid-template-columns: 1fr; /* Küçük ekranlarda tek sütun */
+    }
+}
+
+/* General button styling for consistency */
+.auth-btn,
+.recommendation-button {
+    background-color: #007bff; /* A nice blue, adjust to your theme's primary color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none; /* Remove underline for links */
+    display: inline-flex; /* Align icon and text */
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.auth-btn i,
+.recommendation-button i {
+    margin-right: 8px; /* Space between icon and text */
+}
+
+.auth-btn:hover,
+.recommendation-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Specific styling for the recommendation button within the main search bar */
+.main-search-bar .recommendation-button {
+    /* You might want to adjust width or other properties for this specific button */
+    width: auto; /* Or set a specific width like 200px */
+    padding: 15px 30px; /* Slightly larger for prominence */
+    font-size: 18px;
+    margin-top: 20px; /* Add some space from the text above */
+}

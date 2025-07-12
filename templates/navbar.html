@@ -1,0 +1,12 @@
+{% load static %}
+<header class="navbar" style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="logo">White Sands</div>
+    <nav style="width: 100%; display: flex; justify-content: center;">
+        <ul style="display: flex; justify-content: center; list-style: none; padding: 0; margin: 0 auto;">
+            <li style="margin: 0 15px;"><a href="{% url 'index' %}" {% if request.path == '/' %}class="active"{% endif %}><i class="fas fa-home"></i> Ana Sayfa</a></li>
+            <li style="margin: 0 15px;"><a href="{% url 'recommendation_quiz' %}" {% if 'recommendation_quiz' in request.path %}class="active"{% endif %}><i class="fas fa-compass"></i> Tatil Önerisi</a></li>
+            <li style="margin: 0 15px;"><a href="{% url 'past_recommendations' %}" {% if 'past_recommendations' in request.path %}class="active"{% endif %}><i class="fas fa-history"></i> Geçmiş Öneriler</a></li>
+            <li style="margin: 0 15px;"><a href="{% url 'about' %}" {% if 'about' in request.path %}class="active"{% endif %}><i class="fas fa-info-circle"></i> Hakkımızda</a></li>
+        </ul>
+    </nav>
+</header>

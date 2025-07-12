@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>White Sans - Tatil Paketleri</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <main class="dashboard-content">
+        <h1>En Popüler Tatil Paketlerimiz</h1>
+
+        <div class="search-bar dashboard-search">
+            <input type="text" placeholder="Tatil paketi ara..." id="dashboardSearchInput">
+            <button><i class="fas fa-search"></i> Ara</button>
+        </div>
+
+        <div class="filters">
+            <select id="destinationFilter">
+                <option value="">Tüm Destinasyonlar</option>
+                <option value="turkey">Türkiye</option>
+                <option value="france">Fransa</option>
+                <option value="norway">Norveç</option>
+                <option value="india">Hindistan</option>
+                <option value="usa">ABD</option>
+                <option value="egypt">Mısır</option>
+                <option value="bali">Bali</option>
+                <option value="switzerland">İsviçre</option>
+            </select>
+
+            <select id="budgetFilter">
+                <option value="">Tüm Bütçeler</option>
+                <option value="low">Düşük (0-500$)</option>
+                <option value="medium">Orta (500-1500$)</option>
+                <option value="high">Yüksek (1500$+)</option>
+            </select>
+
+            <button class="apply-filters-btn"><i class="fas fa-filter"></i> Filtrele</button>
+        </div>
+
+        <div class="vacation-cards">
+            <div class="vacation-card" data-destination="turkey" data-budget="medium">
+                <img src="images/turkey.jpg" alt="Kapadokya Balon Turu">
+                <div class="card-info">
+                    <h3>Kapadokya Balon Turu (3 Gün 2 Gece)</h3>
+                    <p>Sıcak hava balonlarıyla Kapadokya'nın eşsiz vadilerini keşfedin. Yer altı şehirleri ve peri bacaları dahil.</p>
+                    <div class="card-footer">
+                        <span class="price"><i class="fas fa-dollar-sign"></i> 799</span>
+                        <a href="package_detail.html?id=kapadokya-balon" class="detail-btn">Detayları Gör <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vacation-card" data-destination="france" data-budget="high">
+                <img src="images/france.jpg" alt="Paris Romantik Kaçamak">
+                <div class="card-info">
+                    <h3>Paris Romantik Kaçamak (4 Gün 3 Gece)</h3>
+                    <p>Eyfel Kulesi'nde romantik akşam yemeği, Louvre Müzesi ziyareti ve Seine Nehri turu.</p>
+                    <div class="card-footer">
+                        <span class="price"><i class="fas fa-dollar-sign"></i> 1299</span>
+                        <a href="package_detail.html?id=paris-romantik" class="detail-btn">Detayları Gör <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vacation-card" data-destination="norway" data-budget="high">
+                <img src="{% static 'images/norway.jpg' %}" alt="Norveç Fiyortları Tekne Turu">
+                <div class="card-info">
+                    <h3>Norveç Fiyortları Tekne Turu (7 Gün 6 Gece)</h3>
+                    <p>Muhteşem fiyort manzaraları eşliğinde unutulmaz bir tekne yolculuğu. Bergen ve Oslo dahil.</p>
+                    <div class="card-footer">
+                        <span class="price"><i class="fas fa-dollar-sign"></i> 1999</span>
+                        <a href="{% url 'package_detail' %}?id=norvec-fiyortlar" class="detail-btn">Detayları Gör <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vacation-card" data-destination="india" data-budget="low">
+                <img src="{% static 'images/india.jpg' %}" alt="Altın Üçgen Turu (Delhi, Agra, Jaipur)">
+                <div class="card-info">
+                    <h3>Hindistan Altın Üçgen Turu (7 Gün 6 Gece)</h3>
+                    <p>Delhi'nin tarihi yapıları, Tac Mahal'in büyüsü ve Jaipur'un renkli kültürü.</p>
+                    <div class="card-footer">
+                        <span class="price"><i class="fas fa-dollar-sign"></i> 499</span>
+                        <a href="{% url 'package_detail' %}?id=altin-ucgen" class="detail-btn">Detayları Gör <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vacation-card" data-destination="usa" data-budget="high">
+                <img src="{% static 'images/usa.jpg' %}" alt="ABD Batı Kıyısı Rüyası">
+                <div class="card-info">
+                    <h3>ABD Batı Kıyısı Rüyası (10 Gün 9 Gece)</h3>
+                    <p>Los Angeles, Las Vegas ve San Francisco'nun gözde mekanlarını keşfedin. Büyük Kanyon turu dahil.</p>
+                    <div class="card-footer">
+                        <span class="price"><i class="fas fa-dollar-sign"></i> 2499</span>
+                        <a href="{% url 'package_detail' %}?id=abd-bati-kiyisi" class="detail-btn">Detayları Gör <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vacation-card" data-destination="egypt" data-budget="medium">
+                <img src="images/mısır.jpg" alt="Mısır Piramitleri ve Nil Nehri Turu">
+                <div class="card-info">
+                    <h3>Mısır Piramitleri ve Nil Nehri Turu (8 Gün 7 Gece)</h3>
+                    <p>Gize Piramitleri'ni ziyaret edin, Luksor ve Asvan'ı keşfedin. Nil Nehri'nde unutulmaz bir yolculuk yapın.</p>
+                    <div class="card-footer">
+                        <span class="price"><i class="fas fa-dollar-sign"></i> 999</span>
+                        <a href="package_detail.html?id=misir-piramitler" class="detail-btn">Detayları Gör <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vacation-card" data-destination="bali" data-budget="medium">
+                <img src="images/pexels-bagus41-1440476.jpg" alt="Bali Cenneti Keşfi">
+                <div class="card-info">
+                    <h3>Bali Cenneti Keşfi (7 Gün 6 Gece)</h3>
+                    <p>Tropikal plajlar, yemyeşil pirinç tarlaları ve mistik tapınaklarla Bali'nin büyüsüne kapılın.</p>
+                    <div class="card-footer">
+                        <span class="price"><i class="fas fa-dollar-sign"></i> 1199</span>
+                        <a href="package_detail.html?id=bali-cennet" class="detail-btn">Detayları Gör <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vacation-card" data-destination="switzerland" data-budget="high">
+                <img src="images/david-edelstein-N4DbvTUDikw-unsplash.jpg" alt="İsviçre Alpleri Lüks Tatil">
+                <div class="card-info">

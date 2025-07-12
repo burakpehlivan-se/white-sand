@@ -1,0 +1,605 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>White Sands - Hakkımızda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Genel sayfa stili */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #f8f9fa;
+            position: relative;
+            background-color: #0d253f; /* Koyu mavi temel renk */
+        }
+        
+        /* Ana içerik alanı */
+        .about-page-content {
+            position: relative;
+            z-index: 1;
+            padding: 40px 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Hero bölümü */
+        .about-hero {
+            position: relative;
+            padding: 100px 0 60px;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0f3052; /* Alt kısımdaki koyu mavi tonu kullanıyoruz */
+            z-index: -1;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .hero-content h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+        
+        /* İçerik bölümleri */
+        section {
+            padding: 60px 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 20px;
+            color: white;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: #4a88ca; /* Açık mavi vurgu rengi */
+        }
+        
+        /* Hikayemiz bölümü */
+        .our-story {
+            background-color: #1a3a5f; /* Açık koyu mavi ton */
+            padding: 60px 0;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .story-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            color: white;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .story-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .story-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 15px;
+            color: white;
+        }
+        
+        .story-item h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #4a88ca; /* Açık mavi vurgu rengi */
+        }
+        
+        .story-item p {
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Values (Değerlerimiz) bölümü */
+        .our-values {
+            background-color: #164272; /* Orta koyu mavi ton */
+            padding: 60px 0;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .value-item {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .value-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .value-item i {
+            font-size: 2.5rem;
+            color: #4a88ca; /* Açık mavi vurgu rengi */
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .value-item h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .value-item p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+        
+        /* Team (Ekibimiz) bölümü */
+        .team-section {
+            background-color: #0f3052; /* Koyu mavi ton */
+            padding: 60px 0;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+        
+        .team-member {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            text-align: center;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+        
+        .team-member-icon {
+            font-size: 3.5rem;
+            margin: 25px 0;
+            color: #4a88ca;
+        }
+        
+        .team-member h3 {
+            margin-top: 20px;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .team-member p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 0 0 20px;
+        }
+        
+        .social-links a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: #4a88ca;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+        
+        .member-image {
+            width: 100%;
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .member-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+        }
+        
+        .team-member h3 {
+            padding: 20px 20px 10px;
+            font-size: 1.4rem;
+            margin: 0;
+            color: white;
+        }
+        
+        .team-member p {
+            padding: 0 20px;
+            margin: 0 0 15px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .social-links {
+            padding: 0 20px 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .social-links a {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: linear-gradient(to right, #ff105f, #ffad06);
+            transform: translateY(-3px);
+        }
+        
+        /* Footer stili */
+        .main-footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 30px 0;
+            color: white;
+            position: relative;
+            z-index: 5;
+            backdrop-filter: blur(10px);
+        }
+        
+        .main-footer .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .main-footer p {
+            margin-bottom: 20px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #4a88ca;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            background-color: #4a88ca;
+            transform: translateY(-5px);
+        }
+        
+        /* Responsive tasarım */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .values-grid, .team-grid, .story-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Canlı gradient arka plan sayfada kendiliğinden görünecek -->
+
+    {% include 'navbar.html' %}
+
+    <main class="about-page-content">
+        <section class="about-hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1>Hayallerinizdeki Tatili Gerçeğe Dönüştürüyoruz</h1>
+                <p>White Sands olarak, sıradan tatil deneyimlerinin ötesine geçerek size özel, unutulmaz anılar yaratmayı hedefliyoruz.</p>
+            </div>
+        </section>
+
+        <section class="our-story">
+            <div class="container">
+                <h2>Hikayemiz</h2>
+                <div class="story-grid">
+                    <div class="story-item">
+                        <h3>Nasıl Başladık?</h3>
+                        <p>White Sands, seyahat tutkunu bir grup arkadaşın, tatil planlamanın zorluklarını ve doğru destinasyonu bulmanın karmaşıklığını fark etmesiyle doğdu. Amacımız, her bütçeye ve her zevke uygun tatil seçeneklerini kolayca erişilebilir kılmaktı.</p>
+                    </div>
+                    <div class="story-item">
+                        <h3>Misyonumuz</h3>
+                        <p>Misyonumuz, yenilikçi yaklaşımımız ve kişiselleştirilmiş hizmet anlayışımızla, kullanıcılarımıza sadece bir tatil değil, aynı zamanda ruhlarını besleyen, yeni kültürler keşfettiren ve hayatlarına anlam katan deneyimler sunmaktır.</p>
+                    </div>
+                    <div class="story-item">
+                        <h3>Vizyonumuz</h3>
+                        <p>Vizyonumuz, seyahat sektöründe lider bir platform haline gelerek, yapay zeka destekli öneri sistemlerimizle her bireyin hayalindeki tatili kolayca bulmasını sağlamak ve sürdürülebilir turizme katkıda bulunmaktır.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="our-values">
+            <div class="container">
+                <h2>Değerlerimiz</h2>
+                <div class="values-grid">
+                    <div class="value-item">
+                        <i class="fas fa-heart"></i>
+                        <h3>Tutku</h3>
+                        <p>Seyahat etmeye ve başkalarına en iyi tatil deneyimlerini sunmaya tutkuyla bağlıyız.</p>
+                    </div>
+                    <div class="value-item">
+                        <i class="fas fa-lightbulb"></i>
+                        <h3>İnovasyon</h3>
+                        <p>Sürekli gelişen teknolojileri takip ederek, tatil planlamayı daha akıllı ve keyifli hale getiriyoruz.</p>
+                    </div>
+                    <div class="value-item">
+                        <i class="fas fa-handshake"></i>
+                        <h3>Güvenilirlik</h3>
+                        <p>Kullanıcılarımızın bize duyduğu güveni en değerli varlığımız olarak görüyor, şeffaf ve dürüst hizmet sunuyoruz.</p>
+                    </div>
+                    <div class="value-item">
+                        <i class="fas fa-users"></i>
+                        <h3>Müşteri Memnuniyeti</h3>
+                        <p>Her müşterimizin beklentilerini aşan, kişiselleştirilmiş ve sorunsuz bir deneyim yaşamasını sağlıyoruz.</p>
+                    </div>
+                    <div class="value-item">
+                        <i class="fas fa-leaf"></i>
+                        <h3>Sürdürülebilirlik</h3>
+                        <p>Çevresel ve kültürel mirasın korunmasına önem veriyor, sorumlu turizmi destekliyoruz.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="team-section">
+            <div class="container">
+                <h2>Ekibimiz</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-member-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3>Burak Pehlivan</h3>
+                        <p>Backend Developer</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-member-icon">
+                            <i class="fas fa-laptop-code"></i>
+                        </div>
+                        <h3>Rümeysa Çekli</h3>
+                        <p>Frontend Developer</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-member-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <h3>Merve Ergin</h3>
+                        <p>Frontend Developer</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2025 White Sands. Tüm hakları saklıdır.</p>
+            <div class="footer-links">
+                <a href="{% url 'about' %}">Hakkımızda</a>
+                <a href="#">Gizlilik Politikası</a>
+                <a href="#">Kullanım Koşulları</a>
+            </div>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
+    
+    <style>
+        /* Footer stili */
+        .main-footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 30px 0;
+            color: white;
+            position: relative;
+            z-index: 5;
+            backdrop-filter: blur(10px);
+        }
+        
+        .main-footer .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .main-footer p {
+            margin-bottom: 20px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #ff105f;
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            background: linear-gradient(to right, #ff105f, #ffad06);
+            transform: translateY(-5px);
+        }
+        
+        /* Responsive tasarım */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .values-grid, .team-grid, .story-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+    </style>
+    
+
+</body>
+</html>

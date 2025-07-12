@@ -1,0 +1,1261 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>White Sans - Tatil Önerisi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <style>
+        /* Slayt gösterisi stilleri */
+        .slideshow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .slide-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0; /* Başlangıçta gizli */
+            transition: opacity 2s ease-in-out; /* 2 saniyelik geçiş süresi */
+            filter: brightness(0.5); /* Resimleri biraz karartarak metnin daha iyi okunmasını sağlar */
+        }
+
+        .slide-image.active-slide {
+            opacity: 1; /* Aktif slayt görünür */
+        }
+        
+        /* Özel navbar stili - sadece bu sayfada geçerli */
+        .navbar {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            backdrop-filter: blur(5px);
+        }
+        
+        .navbar .logo {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .navbar nav ul li a {
+            color: white !important;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            font-weight: 700;
+        }
+        
+        .navbar nav ul li a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Quiz container stilini düzelt */
+        .quiz-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: transparent;
+        }
+        
+        /* Quiz box stilini düzelt */
+        .quiz-box {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            max-width: 700px;
+            width: 100%;
+            margin: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .date-inputs-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .date-inputs-container div {
+            flex: 1;
+        }
+        .date-inputs-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .date-inputs-container input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .recommendation-list {
+            list-style: none;
+            padding: 0;
+        }
+        .recommendation-list li {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .load-more-btn {
+            background: #f0f0f0;
+            color: #333;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .error-message {
+            color: #d9534f;
+            font-weight: 600;
+        }
+        
+        /* Çoklu seçim adımlarında aktif butonlar için belirgin görünüm */
+        [data-select-type="multiple"] .option-btn.active {
+            background-color: #4db6ac;
+            color: white;
+            box-shadow: 0 2px 10px rgba(77, 182, 172, 0.4);
+            transform: scale(1.05);
+        }
+        
+        /* Enter tuşuna basıldığında gerekli alan vurgusu */
+        .highlight-required {
+            animation: pulse 0.5s;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+        
+        /* Ülke input alanının giriş stilini iyileştir */
+        #country {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            margin-top: 8px;
+            transition: border-color 0.3s;
+        }
+        
+        #country:focus {
+            border-color: #4db6ac;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.2);
+        }
+        
+        /* Klavye ile navigasyon için buton odaklama stilini iyileştir */
+        .option-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.5);
+        }
+        
+        /* Öneri kartları için grid düzeni */
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        /* Öneri kartı stili */
+        .recommendation-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Öneri görsel alanı */
+        .recommendation-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .recommendation-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .recommendation-card:hover .recommendation-image img {
+            transform: scale(1.05);
+        }
+        
+        /* Fotoğraf kredisi stili */
+        .photo-credit {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            z-index: 2;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .photo-credit a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .recommendation-card:hover .photo-credit {
+            opacity: 1;
+        }
+        
+        /* Resim üzerindeki koyu katman */
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(0deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 60%);
+            z-index: 1;
+        }
+        
+        /* Konum işareti (badge) */
+        .location-badge {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 0 5px 0 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: auto;
+            min-width: 40%;
+        }
+        
+        .location-name {
+            flex-grow: 1;
+        }
+        
+        .location-map-link {
+            margin-left: 10px;
+            cursor: pointer;
+            padding: 2px 5px;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+        
+        .location-map-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .location-badge i {
+            color: #e74c3c;
+            margin-right: 5px;
+        }
+        
+        /* Detay butonu */
+        .view-details-btn {
+            transition: all 0.3s;
+        }
+        
+        .view-details-btn:hover {
+            background-color: #4db6ac;
+            color: white;
+            border-color: #4db6ac;
+        }
+        
+        /* Öneri içerik alanı */
+        .recommendation-content {
+            padding: 15px;
+        }
+        
+        .recommendation-content h4 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .recommendation-content p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        /* Özet başlık stili */
+        .recommendation-summary {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4db6ac;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .recommendation-summary p {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 16px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        /* Yükleme animasyonu stilleri */
+        .loading-spinner {
+            position: relative;
+            width: 100%;
+            min-height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .spinner-container {
+            text-align: center;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .spinner-text {
+            color: #555;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #4db6ac !important;
+        }
+        
+        /* Hata mesajı stilleri */
+        .error-container {
+            text-align: center;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            max-width: 500px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .error-message {
+            color: #333;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .error-details {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .refresh-btn {
+            padding: 8px 20px;
+            transition: all 0.3s;
+        }
+        
+        .refresh-btn:hover {
+            background-color: #4db6ac;
+            border-color: #4db6ac;
+            color: white;
+        }
+        
+        /* Fade-in animasyonu */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .no-recommendations {
+            padding: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>     
+<body>
+    {% include 'navbar.html' %}
+
+    <div class="slideshow-container"
+        data-image-url-0="{% static 'images/slideShow/china.jpg' %}"
+        data-image-url-1="{% static 'images/slideShow/france.jpg' %}"
+        data-image-url-2="{% static 'images/slideShow/india.jpg' %}"
+        data-image-url-3="{% static 'images/slideShow/egypt.jpg' %}"
+        data-image-url-4="{% static 'images/slideShow/greece.jpg' %}"
+        data-image-url-5="{% static 'images/slideShow/china2.jpg' %}"
+        data-image-url-6="{% static 'images/slideShow/turkey.jpg' %}"
+        data-image-url-7="{% static 'images/slideShow/usa.jpg' %}"
+        data-image-url-8="{% static 'images/slideShow/morocco.jpg' %}"
+        data-image-url-9="{% static 'images/slideShow/portugal.jpg' %}"
+        data-image-url-10="{% static 'images/slideShow/thailand.jpg' %}"
+        data-image-url-11="{% static 'images/slideShow/vietnam.jpg' %}"
+        data-image-url-12="{% static 'images/slideShow/sri lanka.jpg' %}">
+        <!-- Slayt elementleri -->
+        <div class="slide-image active-slide"></div>
+        <div class="slide-image next-slide"></div>
+    </div>
+
+    <main class="quiz-container">
+        <div class="quiz-box">
+            <h2>Tatil Tercihlerini Belirle</h2>
+            <div class="quiz-progress-bar">
+                <div class="progress" style="width: 0%;"></div>
+            </div>
+
+            <div class="quiz-steps">
+                <!-- Step 1: Ülke Seçimi -->
+                <div class="quiz-step active-step" data-step="1">
+                    <h3>1/10: Seyahat Etmek İstediğiniz Ülke?</h3>
+                    <label for="country">Ülke Adı:</label>
+                    <input type="text" id="country" name="country" placeholder="Örn: Türkiye">
+                </div>
+
+                <!-- Step 2: Konaklama Tipi -->
+                <div class="quiz-step" data-step="2">
+                    <h3>2/10: Tercih Ettiğiniz Konaklama Tipi?</h3>
+                    <div class="options-grid">
+                        <button class="option-btn" data-value="Otel"><i class="fas fa-hotel"></i> Otel</button>
+                        <button class="option-btn" data-value="Pansiyon"><i class="fas fa-bed"></i> Pansiyon</button>
+                        <button class="option-btn" data-value="Kiralık Ev/Villa"><i class="fas fa-home"></i> Kiralık Ev/Villa</button>
+                        <button class="option-btn" data-value="Kamp"><i class="fas fa-campground"></i> Kamp</button>
+                        <button class="option-btn" data-value="Fark Etmez"><i class="fas fa-question-circle"></i> Fark Etmez</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Bütçe -->
+                <div class="quiz-step" data-step="3">
+                    <h3>3/10: Tatil İçin Bütçeniz?</h3>
+                    <div class="options-grid">
+                        <button class="option-btn" data-value="Ekonomik"><i class="fas fa-wallet"></i> Ekonomik</button>
+                        <button class="option-btn" data-value="Orta"><i class="fas fa-money-bill-wave"></i> Orta</button>
+                        <button class="option-btn" data-value="Lüks"><i class="fas fa-gem"></i> Lüks</button>
+                        <button class="option-btn" data-value="Fark Etmez"><i class="fas fa-sliders-h"></i> Bütçe Esnek</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Aktiviteler (Multi-select) -->
+                <div class="quiz-step" data-step="4" data-select-type="multiple">
+                    <h3>4/10: Hangi Aktiviteler Size Hitap Eder? (Birden fazla seçebilirsiniz)</h3>
+                    <div class="options-grid">
+                        <button class="option-btn" data-value="Deniz ve Güneş"><i class="fas fa-sun"></i> Deniz/Güneş</button>
+                        <button class="option-btn" data-value="Kültür ve Tarih"><i class="fas fa-landmark"></i> Kültür/Tarih</button>
+                        <button class="option-btn" data-value="Doğa Yürüyüşü"><i class="fas fa-hiking"></i> Doğa Yürüyüşü</button>
+                        <button class="option-btn" data-value="Macera Sporları"><i class="fas fa-parachute-box"></i> Macera Sporları</button>
+                        <button class="option-btn" data-value="Gastronomi"><i class="fas fa-utensils"></i> Gastronomi</button>
+                        <button class="option-btn" data-value="Dinlenme"><i class="fas fa-spa"></i> Dinlenme/Spa</button>
+                        <button class="option-btn" data-value="Alışveriş"><i class="fas fa-shopping-bag"></i> Alışveriş</button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Mevsim -->
+                <div class="quiz-step" data-step="5">
+                    <h3>5/10: Hangi Mevsimde Tatil Yapmayı Planlıyorsunuz?</h3>
+                    <div class="options-grid">
+                        <button class="option-btn" data-value="İlkbahar"><i class="fas fa-leaf"></i> İlkbahar</button>
+                        <button class="option-btn" data-value="Yaz"><i class="fas fa-sun"></i> Yaz</button>
+                        <button class="option-btn" data-value="Sonbahar"><i class="fas fa-cloud-sun"></i> Sonbahar</button>
+                        <button class="option-btn" data-value="Kış"><i class="fas fa-snowflake"></i> Kış</button>
+                        <button class="option-btn" data-value="Fark Etmez"><i class="fas fa-calendar-alt"></i> Fark Etmez</button>
+                    </div>
+                </div>
+
+                <!-- Step 6: Coğrafi Tercihler (Multi-select) -->
+                <div class="quiz-step" data-step="6" data-select-type="multiple">
+                    <h3>6/10: Ne Tür Coğrafi Bölgeler İlginizi Çeker? (Birden fazla seçebilirsiniz)</h3>
+                    <div class="options-grid">
+                        <button class="option-btn" data-value="Dağlık"><i class="fas fa-mountain"></i> Dağlık Alanlar</button>
+                        <button class="option-btn" data-value="Sahil Kasabası"><i class="fas fa-umbrella-beach"></i> Sahil/Kıyı</button>
+                        <button class="option-btn" data-value="Büyük Şehir"><i class="fas fa-city"></i> Büyük Şehir</button>
+                        <button class="option-btn" data-value="Kırsal Alan"><i class="fas fa-tractor"></i> Kırsal/Doğal</button>
+                        <button class="option-btn" data-value="Ada"><i class="fas fa-water"></i> Ada</button>
+                        <button class="option-btn" data-value="Çöl"><i class="fas fa-sun"></i> Çöl</button>
+                    </div>
+                </div>
+
+                <!-- Step 7: Yemek Tercihleri (Multi-select) -->
+                <div class="quiz-step" data-step="7" data-select-type="multiple">
+                    <h3>7/10: Yemek Tercihleriniz Nelerdir? (Birden fazla seçebilirsiniz)</h3>
+                    <div class="options-grid">
+                        <button class="option-btn" data-value="Yerel Mutfak"><i class="fas fa-pepper-hot"></i> Yerel Mutfak</button>
+                        <button class="option-btn" data-value="Deniz Ürünleri"><i class="fas fa-fish"></i> Deniz Ürünleri</button>
+                        <button class="option-btn" data-value="Vejetaryen/Vegan"><i class="fas fa-carrot"></i> Vejetaryen/Vegan</button>
+                        <button class="option-btn" data-value="Uluslararası Mutfak"><i class="fas fa-globe-americas"></i> Uluslararası</button>
+                        <button class="option-btn" data-value="Sokak Lezzetleri"><i class="fas fa-hamburger"></i> Sokak Lezzetleri</button>
+                    </div>
+                </div>
+
+                <!-- Step 8: Eğlence Tercihleri (Multi-select) -->
+                <div class="quiz-step" data-step="8" data-select-type="multiple">
+                    <h3>8/10: Eğlence Anlayışınız Nedir? (Birden fazla seçebilirsiniz)</h3>
+                    <div class="options-grid">
+                        <button class="option-btn" data-value="Yeme İçme"><i class="fas fa-cocktail"></i> Yeme İçme</button>
+                        <button class="option-btn" data-value="Canlı Müzik"><i class="fas fa-music"></i> Canlı Müzik</button>
+                        <button class="option-btn" data-value="Sessiz Sakin"><i class="fas fa-book-reader"></i> Sessiz ve Sakin</button>
+                        <button class="option-btn" data-value="Festivaller"><i class="fas fa-users"></i> Festivaller/Etkinlikler</button>
+                        <button class="option-btn" data-value="Aile Dostu Aktiviteler"><i class="fas fa-child"></i> Aile Dostu</button>
+                    </div>
+                </div>
+
+                <!-- Step 9: Seyahat Tarihleri -->
+                <div class="quiz-step" data-step="9">
+                    <h3>9/10: Seyahat Tarihleriniz? (Opsiyonel)</h3>
+                    <div class="date-inputs-container">
+                        <div>
+                            <label for="start_date">Başlangıç Tarihi:</label>
+                            <input type="date" id="start_date" name="start_date">
+                        </div>
+                        <div>
+                            <label for="end_date">Bitiş Tarihi:</label>
+                            <input type="date" id="end_date" name="end_date">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 10: Ulaşım Dahil mi? -->
+                <div class="quiz-step" data-step="10">
+                    <h3>10/10: Ulaşım Süresi Öneriye Dahil Edilsin mi?</h3>
+                     <p style="font-size: 0.9em; color: #777; margin-bottom: 15px;">(Örneğin, çok uzak bir yer önerilmemesi için)</p>
+                    <div class="options-grid">
+                        <button class="option-btn" data-value="true"><i class="fas fa-check-circle"></i> Evet</button>
+                        <button class="option-btn" data-value="false"><i class="fas fa-times-circle"></i> Hayır</button>
+                    </div>
+                </div>
+
+                <!-- Result Step -->
+                <div class="quiz-step result-step" data-step="11">
+                    <h3>Tatil Önerilerin Hazır!</h3>
+                    <div class="recommendation-summary">
+                        <!-- Özet başlık buraya dinamik olarak eklenecek -->
+                    </div>
+                    
+                    <dotlottie-player class="loading-spinner" src="https://lottie.host/601fa05c-4c10-4cdc-97fe-a45acc204013/h9P8B63r7t.json" background="transparent" speed="1" style="width: 300px; height: 300px; margin: 0 auto; display: none;" loop autoplay></dotlottie-player>
+                    
+                    <div id="recommendationsContainer" class="recommendations-grid">
+                        <!-- Öneriler buraya dinamik olarak eklenecek -->
+                    </div>
+                    
+                    <div class="no-recommendations" style="display: none; text-align: center; padding: 20px;">
+                        <p>Malesef şu anda öneri oluşturulamadı. Lütfen daha sonra tekrar deneyin.</p>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button class="start-over-btn btn btn-outline-primary"><i class="fas fa-redo"></i> Yeniden Başla</button>
+                    </div>
+                </div>
+            </div>
+            <div class="quiz-navigation">
+                <button class="prev-step-btn" style="display: none;"><i class="fas fa-arrow-left"></i> Geri</button>
+                <button class="next-step-btn" data-target-step="2">İleri <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    // Google Haritalar'da lokasyonu açan fonksiyon
+    function openInGoogleMaps(locationName) {
+        if (locationName) {
+            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationName)}`;
+            window.open(mapsUrl, '_blank');
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Slayt gösterisini başlat
+        initSlideshow();
+        
+        // Kullanıcı seçimlerini saklamak için genişletilmiş obje
+        const userSelections = {
+            country: '',
+            accommodation: '',
+            budget: '',
+            activities: [],
+            season: '',
+            geo: [],
+            food: [],
+            entertainment: [],
+            start_date: '',
+            end_date: '',
+            include_travel_time: false
+        };
+
+        // Quiz adımları ve kontroller
+        const quizSteps = document.querySelectorAll('.quiz-step');
+        const optionButtons = document.querySelectorAll('.option-btn');
+        const nextButton = document.querySelector('.next-step-btn');
+        const prevButton = document.querySelector('.prev-step-btn');
+        const progressBar = document.querySelector('.progress');
+        const startOverButton = document.querySelector('.start-over-btn');
+        const recommendationsContainer = document.getElementById('recommendationsContainer');
+        let currentStep = 1;
+        const totalSteps = 11; // 10 soru + 1 sonuç adımı
+
+        // CSRF token'ı almak için helper
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        // Başlangıçta butonları ve progress barı güncelle
+        updateProgressBar();
+        updateNavButtons();
+
+        // Input ve butonlar için event listener'lar ekle
+        initializeEventListeners();
+
+        // Input ve seçenek dinleyicileri
+        function initializeEventListeners() {
+            // Global klavye dinleyicisi ekle (Enter tuşu için)
+            document.addEventListener('keydown', function(event) {
+                // Enter tuşuna basıldığında ve son adımda değilsek
+                if (event.key === 'Enter' && currentStep < totalSteps) {
+                    // Güncel adımdaki input değerlerini al
+                    getInputValuesForCurrentStep();
+                    
+                    // Çoklu seçim adımlarında herhangi bir seçim yapılmış mı kontrol et
+                    const currentStepElement = document.querySelector(`.quiz-step[data-step="${currentStep}"]`);
+                    const isMultiSelect = currentStepElement.getAttribute('data-select-type') === 'multiple';
+                    let canProceed = true;
+                    
+                    if (currentStep === 1) {
+                        // Ülke adı girilmiş mi kontrol et
+                        const countryInput = document.getElementById('country');
+                        canProceed = countryInput.value.trim().length > 0;
+                    } else if (isMultiSelect) {
+                        // Çoklu seçim için en az bir seçim yapılmış mı kontrol et (opsiyonel)
+                        // Çoklu seçimlerde en az bir seçim zorunluluğu istenmiyorsa bu koşulu kaldırabilirsiniz
+                        /*
+                        let targetArray;
+                        switch(currentStep) {
+                            case 4: targetArray = userSelections.activities; break;
+                            case 6: targetArray = userSelections.geo; break;
+                            case 7: targetArray = userSelections.food; break;
+                            case 8: targetArray = userSelections.entertainment; break;
+                            default: targetArray = [];
+                        }
+                        canProceed = targetArray.length > 0;
+                        */
+                    } else {
+                        // Tekli seçim adımlarında seçim yapılmış mı kontrol et
+                        const activeButton = currentStepElement.querySelector('.option-btn.active');
+                        canProceed = !!activeButton || currentStep === 9; // Tarih adımında için giriş isteye bağlı değil
+                    }
+                    
+                    if (canProceed) {
+                        goToStep(currentStep + 1);
+                    } else {
+                        // Seçim yapılmadıysa kısa bir vurgu yap
+                        currentStepElement.classList.add('highlight-required');
+                        setTimeout(() => {
+                            currentStepElement.classList.remove('highlight-required');
+                        }, 500);
+                    }
+                    
+                    // Formun normal davranışını engelle
+                    event.preventDefault();
+                }
+            });
+
+            // Text input dinleyicisi
+            const countryInput = document.getElementById('country');
+            if (countryInput) {
+                countryInput.addEventListener('input', function() {
+                    userSelections.country = this.value.trim();
+                    updateNextButton();
+                });
+                
+                // Enter tuşuna basıldığında bir sonraki adıma geç
+                countryInput.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter' && this.value.trim().length > 0) {
+                        event.preventDefault(); // Formun gönderilmesini engelle
+                        goToStep(currentStep + 1);
+                    }
+                });
+            }
+
+            // Tarih alanı dinleyicileri
+            const startDateInput = document.getElementById('start_date');
+            const endDateInput = document.getElementById('end_date');
+            
+            if (startDateInput) {
+                startDateInput.addEventListener('change', function() {
+                    userSelections.start_date = this.value;
+                });
+            }
+            
+            if (endDateInput) {
+                endDateInput.addEventListener('change', function() {
+                    userSelections.end_date = this.value;
+                    
+                    // Her iki tarih de seçildiğinde otomatik olarak ilerle
+                    if (startDateInput.value && endDateInput.value) {
+                        setTimeout(() => {
+                            goToStep(currentStep + 1);
+                        }, 400);
+                    }
+                });
+            }
+
+            // Seçenek butonlarına tıklama eventi
+            optionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStepElement = document.querySelector(`.quiz-step[data-step="${currentStep}"]`);
+                    const isMultiSelect = currentStepElement.getAttribute('data-select-type') === 'multiple';
+                    const value = this.getAttribute('data-value');
+                    
+                    if (isMultiSelect) {
+                        // Çoklu seçim modu - toggle aktif durumu
+                        this.classList.toggle('active');
+                        
+                        // Hangi çoklu seçim adımındayız?
+                        let targetArray;
+                        switch(currentStep) {
+                            case 4: targetArray = 'activities'; break;
+                            case 6: targetArray = 'geo'; break;
+                            case 7: targetArray = 'food'; break;
+                            case 8: targetArray = 'entertainment'; break;
+                            default: targetArray = null;
+                        }
+                        
+                        if (targetArray) {
+                            // Aktifse ekle, değilse çıkar
+                            if (this.classList.contains('active')) {
+                                if (!userSelections[targetArray].includes(value)) {
+                                    userSelections[targetArray].push(value);
+                                }
+                            } else {
+                                userSelections[targetArray] = userSelections[targetArray].filter(item => item !== value);
+                            }
+                        }
+                    } else {
+                        // Tekli seçim modu - sadece bir buton aktif olabilir
+                        const currentStepButtons = currentStepElement.querySelectorAll('.option-btn');
+                        currentStepButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Hangi adımdayız?
+                        switch(currentStep) {
+                            case 2: userSelections.accommodation = value; break;
+                            case 3: userSelections.budget = value; break;
+                            case 5: userSelections.season = value; break;
+                            case 10: userSelections.include_travel_time = (value === 'true'); break;
+                        }
+                    }
+                    
+                    // Çoklu seçim dışında otomatik ilerle
+                    if (!isMultiSelect) {
+                        setTimeout(() => {
+                            goToStep(currentStep + 1);
+                        }, 400);
+                    }
+                });
+            });
+            
+            // İleri ve geri butonları
+            nextButton.addEventListener('click', function() {
+                // Güncel adımdaki input değerlerini al
+                getInputValuesForCurrentStep();
+                
+                const targetStep = parseInt(this.getAttribute('data-target-step'));
+                goToStep(targetStep);
+            });
+            
+            prevButton.addEventListener('click', function() {
+                goToStep(currentStep - 1);
+            });
+            
+            startOverButton.addEventListener('click', function() {
+                resetQuiz();
+            });
+        }
+        
+        // İleri butonunun durumunu güncelle
+        function updateNextButton() {
+            // Eğer şu anki adım ülke seçimi (1) ve input boşsa, ileri butonunu devre dışı bırak
+            if (currentStep === 1) {
+                const countryInput = document.getElementById('country');
+                nextButton.disabled = !countryInput.value.trim();
+                nextButton.style.opacity = countryInput.value.trim() ? '1' : '0.5';
+            } else {
+                nextButton.disabled = false;
+                nextButton.style.opacity = '1';
+            }
+        }
+        
+        // Güncel adımdaki input değerlerini al
+        function getInputValuesForCurrentStep() {
+            switch(currentStep) {
+                case 1:
+                    const countryInput = document.getElementById('country');
+                    if (countryInput) userSelections.country = countryInput.value.trim();
+                    break;
+                case 9:
+                    const startDateInput = document.getElementById('start_date');
+                    const endDateInput = document.getElementById('end_date');
+                    if (startDateInput) userSelections.start_date = startDateInput.value;
+                    if (endDateInput) userSelections.end_date = endDateInput.value;
+                    break;
+            }
+        }
+
+        // Belirli bir adıma geçiş fonksiyonu
+        function goToStep(stepNumber) {
+            // Güncel adımdaki değerleri kaydet
+            getInputValuesForCurrentStep();
+            
+            // Adım değişikliği
+            quizSteps.forEach(step => step.classList.remove('active-step'));
+            const targetStepElement = document.querySelector(`.quiz-step[data-step="${stepNumber}"]`);
+            targetStepElement.classList.add('active-step');
+            currentStep = stepNumber;
+            
+            // Görsel güncellemeler
+            updateProgressBar();
+            updateNavButtons();
+            updateNextButton();
+            
+            // Sonuç adımına gelindiğinde tavsiye al
+            if (currentStep === totalSteps) {
+                getRecommendation();
+            }
+        }
+
+        // Tavsiye isteğini AJAX ile gönder
+        function getRecommendation() {
+            // Temizlik - tüm sonuç alanı bileşenlerini sıfırla
+            const loadingSpinner = document.querySelector('.loading-spinner');
+            const recommendationsContainer = document.getElementById('recommendationsContainer');
+            const noRecommendations = document.querySelector('.no-recommendations');
+            const summaryContainer = document.querySelector('.recommendation-summary');
+            
+            // Tüm sonuç bileşenlerini gizle
+            [recommendationsContainer, noRecommendations, summaryContainer].forEach(el => {
+                if (el) el.style.display = 'none';
+            });
+            
+            // Yükleme animasyonunu göster
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'block';
+            }
+            
+            // Öneriler yüklenmeden önce içeriklerini temizle
+            if (recommendationsContainer) {
+                recommendationsContainer.innerHTML = '';
+            }
+            
+            // API çağrısını yap
+            fetch("{% url 'ajax_get_recommendation' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(userSelections)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Önce yükleme animasyonunu gizle
+                if (loadingSpinner) {
+                    loadingSpinner.style.display = 'none';
+                }
+                
+                if (data.success && data.recommendations && data.recommendations.length > 0) {
+                    // Özet başlığı göster (eğer varsa)
+                    const summaryContainer = document.querySelector('.recommendation-summary');
+                    if (summaryContainer) {
+                        if (data.summary_title) {
+                            summaryContainer.innerHTML = `<p>${data.summary_title}</p>`;
+                        } else {
+                            summaryContainer.innerHTML = `<p>Tercihlerinize göre en uygun tatil önerileri:</p>`;
+                        }
+                        summaryContainer.style.display = 'block';
+                    }
+                    
+                    // Önerileri görüntüle - bir mikrosaniye bekletelim ki DOM güncellenmesi yetişsin
+                    setTimeout(() => {
+                        recommendationsContainer.style.display = 'grid';
+                    }, 50);
+                    
+                    // Öneri kartı HTML'i
+                    let recommendationsHTML = '';
+                    
+                    data.recommendations.forEach((recommendation, index) => {
+                        // Backend'den gelen lokasyon ismini al
+                        const locationName = recommendation.location_name;
+                        
+                        console.log(`Öneri işleniyor: ${locationName} (index: ${index})`);
+                        
+                        // Unsplash API'den gelen resim bilgilerini kontrol et
+                        let imageUrl, photographerName, photographerLink;
+                        
+                        // Her öneri için özel resimler göster - 'images' alanını kullan
+                        if (recommendation.images && Array.isArray(recommendation.images) && recommendation.images.length > 0) {
+                            // Backend'den gelen öneri için özel resim koleksiyonunu kullan
+                            // Her öneri için benzersiz bir resim almak için rastgele seçim yap
+                            const randomIndex = Math.floor(Math.random() * recommendation.images.length);
+                            const selectedImage = recommendation.images[randomIndex];
+                            
+                            imageUrl = selectedImage.url;
+                            photographerName = selectedImage.user_name || 'Unsplash';
+                            photographerLink = selectedImage.user_link || 'https://unsplash.com';
+                            console.log(`${locationName} için özel Unsplash resmi: ${imageUrl} (${randomIndex}/${recommendation.images.length})`);
+                        } else if (recommendation.image && recommendation.image.url) {
+                            // Eski API formatı - geriye dönük uyumluluk için
+                            imageUrl = recommendation.image.url;
+                            photographerName = recommendation.image.user_name || 'Unsplash';
+                            photographerLink = recommendation.image.user_link || 'https://unsplash.com';
+                            console.log(`${locationName} için Unsplash resmi (eski format): ${imageUrl}`);
+                        } else {
+                            // Yedek resimler (Unsplash API çalışmazsa)
+                            const travelImages = [
+                                'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800', // dağ
+                                'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', // plaj
+                                'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800', // deniz
+                                'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800', // şehir
+                                'https://images.unsplash.com/photo-1502784444187-359ac186c5bb?w=800', // gün batımı
+                                'https://images.unsplash.com/photo-1468413253725-0d5181091126?w=800', // antik kent
+                                'https://images.unsplash.com/photo-1610641818989-c2051b5e2cfd?w=800', // tatil köyü
+                                'https://images.unsplash.com/photo-1602002418082-dd4a8f7d85d2?w=800' // otel
+                            ];
+                            
+                            // Deterministik ama her öneri için farklı bir indeks oluştur
+                            const seed = locationName + index; // öneri indeksini ekliyoruz ki aynı lokasyonlar bile farklı resimler alsın
+                            const imageIndex = Math.abs(seed.split('').reduce((a, b) => {
+                                return a + b.charCodeAt(0);
+                            }, 0) % travelImages.length);
+                            
+                            imageUrl = travelImages[imageIndex];
+                            photographerName = 'Unsplash';
+                            photographerLink = 'https://unsplash.com';
+                            console.log(`${locationName} için yedek resim: ${imageUrl}`);
+                        }
+                        
+                        // Kart HTML'i oluştur
+                        recommendationsHTML += `
+                        <div class="recommendation-card">
+                            <div class="recommendation-image">
+                                <div class="image-overlay"></div>
+                                <img src="${imageUrl}" 
+                                     alt="${recommendation.location_name}" 
+                                     loading="lazy"
+                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800';">
+                                <div class="location-badge">
+                                    <span class="location-name"><i class="fas fa-map-marker-alt"></i> ${recommendation.location_name}</span>
+                                    <span class="location-map-link" title="Google Haritalar'da Göster" data-location="${recommendation.location_name}">
+                                        <i class="fas fa-map"></i>
+                                    </span>
+                                </div>
+                                <!-- Fotoğrafçı bilgisi kullanıcı isteği üzerine kaldırıldı -->
+                            </div>
+                            <div class="recommendation-content">
+                                <h4>${recommendation.location_name}</h4>
+                                <p>${recommendation.description}</p>
+                                <button class="btn btn-sm btn-outline-primary mt-2 view-details-btn" data-location="${recommendation.location_name}">
+                                    <i class="fas fa-info-circle"></i> Daha Fazla Bilgi
+                                </button>
+                            </div>
+                        </div>
+                        `;
+                    });
+                    
+                    recommendationsContainer.innerHTML = recommendationsHTML;
+                    
+                    // Önerileri localStorage'a kaydet
+                    saveRecommendationsToLocalStorage(data.recommendations);
+                    
+                    // Harita ikonlarına tıklama olayı ekle
+                    document.querySelectorAll('.location-map-link').forEach(icon => {
+                        icon.addEventListener('click', function() {
+                            const locationName = this.getAttribute('data-location');
+                            if (locationName) {
+                                openInGoogleMaps(locationName);
+                            }
+                        });
+                    });
+                    
+                    // Daha Fazla Bilgi butonlarına tıklama olayı ekle
+                    document.querySelectorAll('.view-details-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const locationName = this.getAttribute('data-location');
+                            if (locationName) {
+                                // Google'da arama yap
+                                const searchQuery = `${locationName} turistik yerler`;
+                                const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+                                window.open(googleSearchUrl, '_blank');
+                            }
+                        });
+                    });
+                    
+                    // Önerileri localStorage'a kaydeden fonksiyon
+                    function saveRecommendationsToLocalStorage(recommendations) {
+                        if (!recommendations || !Array.isArray(recommendations) || recommendations.length === 0) {
+                            return;
+                        }
+                        
+                        try {
+                            // Mevcut önerileri al
+                            let pastRecommendations = [];
+                            const stored = localStorage.getItem('pastRecommendations');
+                            if (stored) {
+                                pastRecommendations = JSON.parse(stored);
+                            }
+                            
+                            // Tarih ve benzersiz ID ekleyerek yeni önerileri kaydet
+                            const now = new Date().toISOString();
+                            const newRecommendations = recommendations.map(rec => {
+                                return {
+                                    ...rec,
+                                    id: `rec_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+                                    date: now
+                                };
+                            });
+                            
+                            // Yeni ve eski önerileri birleştir (en fazla 20 öneri sakla)
+                            const combinedRecommendations = [...pastRecommendations, ...newRecommendations]
+                                .slice(-20); // Sadece son 20 öneriyi tut
+                            
+                            // Kaydedilmiş önerileri güncelle
+                            localStorage.setItem('pastRecommendations', JSON.stringify(combinedRecommendations));
+                            console.log("Tavsiyeler localStorage'a kaydedildi:", combinedRecommendations.length);
+                            
+                        } catch (e) {
+                            console.error('Tavsiyeleri kaydetme hatası:', e);
+                        }
+                    }
+                } else {
+                    // Hata durumunda göster
+                    if (noRecommendations) {
+                        if (data.error) {
+                            noRecommendations.innerHTML = `
+                                <div class="error-container">
+                                    <i class="fas fa-exclamation-circle text-danger mb-3" style="font-size: 2rem;"></i>
+                                    <p class="error-message">Bir hata oluştu: ${data.error}</p>
+                                    ${data.details ? `<p class="error-details">Detay: ${data.details}</p>` : ''}
+                                    <button class="btn btn-outline-primary mt-3 refresh-btn" onclick="resetQuiz()">Tekrar Dene</button>
+                                </div>
+                            `;
+                        } else {
+                            noRecommendations.innerHTML = `
+                                <div class="error-container">
+                                    <i class="fas fa-info-circle text-warning mb-3" style="font-size: 2rem;"></i>
+                                    <p class="error-message">Maalesef şu anda öneri oluşturulamadı.</p>
+                                    <button class="btn btn-outline-primary mt-3 refresh-btn" onclick="resetQuiz()">Tekrar Dene</button>
+                                </div>
+                            `;
+                        }
+                        // Kısa bir gecikmeyle hata mesajını göster - animasyon akışı için
+                        setTimeout(() => {
+                            noRecommendations.style.display = 'block';
+                        }, 100);
+                    }
+                }
+            })
+            .catch(error => {
+                // Yükleniyor animasyonunu gizle
+                if (loadingSpinner) {
+                    loadingSpinner.style.display = 'none';
+                }
+                
+                // Hata mesajını göster
+                if (noRecommendations) {
+                    noRecommendations.innerHTML = `
+                        <div class="error-container">
+                            <i class="fas fa-wifi-slash text-danger mb-3" style="font-size: 2rem;"></i>
+                            <p class="error-message">Öneri alınırken bir ağ hatası oluştu.</p>
+                            <p class="error-details">Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.</p>
+                            <button class="btn btn-outline-primary mt-3 refresh-btn" onclick="resetQuiz()">Tekrar Dene</button>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        noRecommendations.style.display = 'block';
+                    }, 100);
+                }
+                console.error('Error:', error);
+            });
+        }
+
+        // Progress bar güncelle
+        function updateProgressBar() {
+            const percent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            progressBar.style.width = percent + '%';
+        }
+
+        // Navigasyon butonlarını güncelle
+        function updateNavButtons() {
+            prevButton.style.display = (currentStep > 1 && currentStep < totalSteps) ? 'inline-block' : 'none';
+            nextButton.style.display = (currentStep < totalSteps - 1) ? 'inline-block' : 'none';
+            
+            // Bir sonraki adım için hedef adımı güncelle
+            if (currentStep < totalSteps - 1) {
+                nextButton.setAttribute('data-target-step', currentStep + 1);
+            }
+        }
+
+        // Quiz sıfırla fonksiyonu
+        function resetQuiz() {
+            console.log('Quiz sıfırlanıyor...');
+            
+            // Kullanıcı seçimlerini sıfırla
+            Object.keys(userSelections).forEach(key => {
+                if (Array.isArray(userSelections[key])) {
+                    userSelections[key] = [];
+                } else if (typeof userSelections[key] === 'boolean') {
+                    userSelections[key] = false;
+                } else {
+                    userSelections[key] = '';
+                }
+            });
+            
+            // Tüm input alanlarını sıfırla
+            document.querySelectorAll('input[type="text"], input[type="date"]').forEach(input => {
+                input.value = '';
+            });
+            
+            // Tüm seçenekleri (butonları) sıfırla
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            if (noRecommendations) {
+                noRecommendations.style.display = 'none';
+            }
+            
+            // Yükleniyor animasyonunu gizle
+            const loadingSpinner = document.querySelector('.loading-spinner');
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'none';
+            }
+            
+            // İlk adıma dön
+            goToStep(1);
+            console.log('Quiz sıfırlandı ve ilk adıma dönüldü.');
+        }
+        
+        // Yeniden başla butonuna tıklama olayı ekle
+        startOverButton.addEventListener('click', function() {
+            console.log('Yeniden başla butonuna tıklandı');
+            resetQuiz();
+        });
+        
+        // Slayt gösterisi fonksiyonu
+        function initSlideshow() {
+            const slideshow = document.querySelector('.slideshow-container');
+            if (!slideshow) {
+                console.log('Slayt gösterisi container bulunamadı');
+                return;
+            }
+            
+            const slides = {
+                active: document.querySelector('.active-slide'),
+                next: document.querySelector('.next-slide')
+            };
+            
+            if (!slides.active || !slides.next) {
+                console.log('Slayt elementleri bulunamadı');
+                return;
+            }
+            
+            let currentImageIndex = 0;
+            const imageUrls = [];
+            
+            // Tüm data-image-url-* özelliklerini al
+            for (let i = 0; i < 10; i++) {
+                const url = slideshow.getAttribute(`data-image-url-${i}`);
+                if (url) {
+                    imageUrls.push(url);
+                }
+            }
+            
+            if (imageUrls.length === 0) {
+                console.log("Resim URL'leri bulunamadı");
+                return;
+            }
+            
+            console.log(`Slayt gösterisi başlatılıyor: ${imageUrls.length} resim bulundu`);
+            
+            // İlk resmi göster
+            slides.active.style.backgroundImage = `url('${imageUrls[0]}')`;            
+            slides.active.style.opacity = 1;
+            
+            // Resim değiştirme işlevi
+            function changeSlide() {
+                currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+                
+                // Bir sonraki slaytı hazırla
+                slides.next.style.backgroundImage = `url('${imageUrls[currentImageIndex]}')`;                
+                
+                // Geçişi yap
+                slides.next.style.opacity = 1;
+                slides.active.style.opacity = 0;
+                
+                // Değişkenleri değiştir
+                const temp = slides.active;
+                slides.active = slides.next;
+                slides.next = temp;
+            }
+            
+            // 8 saniyede bir değiştir
+            setInterval(changeSlide, 8000);
+        }
+        
+        // Google Haritalar'da lokasyonu açan fonksiyon
+        function openInGoogleMaps(locationName) {
+            if (locationName) {
+                const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(locationName)}`;
+                window.open(mapsUrl, '_blank');
+            }
+        }
+    });
+    </script>
+</body>
+</html>
