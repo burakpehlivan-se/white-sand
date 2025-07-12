@@ -1,0 +1,117 @@
+insanlara tatil yerlerini seçmesinde yardımcı olacak bir internet sitesi yazmak istiyorum sitenin özellikleri şunlar olacak: yazılımsal özellikler:
+
+    -Frontend html css ve js ile yazılacak. Bootstrap vb teknolojiler de kullanılabilir.
+    -Backend tamamen django ile yazılacak.
+    -Kullanıcı giriş bilgileri ve diğer verileri tutmak için postgresql kullanılacak.
+    -Kullancının seçimine göre tatil yeri seçmek için kullanıcının cevabı uygun bir şekilde prompt'a çevrilip gemini api kullanılarak geri dönüt alınacak.
+	Gemini api key: AIzaSyBwSpu8rey-BBNW7t8MzMSCzpdodtpikNM
+    -Gemini api den alınan sonuç lokasyonlar google haritalarda da gösterilecek.
+
+site özellikleri:
+
+    Kullanıcı girişi olacak ve kullacılar giriş yaptığında önceki önerileri ve favoriledikleri yerleri görebiliecek.
+    Giriş yaparken email ile ve google ile giriş yapma seçeneği olacak.
+
+
+Akış Şeması:
+**Başlangıç Noktası:** Kullanıcı web sitesi URL'sine erişir.
+
+1.  **Ana Sayfa Yükleme (Frontend):**
+    *   Tarayıcı, sunucudan HTML, CSS, JavaScript (ve Bootstrap gibi kütüphaneler) dosyalarını talep eder.
+    *   **Backend (Django):** İsteği alır.
+    *   **Backend:** Kullanıcının oturum (session) durumunu kontrol eder (Cookie/Token var mı?).
+        *   **Karar:** Kullanıcı Giriş Yapmış mı?
+            *   **Evet ise (Giriş Yapmış):**
+                *   **Backend:** PostgreSQL veritabanından kullanıcı bilgilerini (isim, önceki aramalar, favoriler) çeker.
+                *   **Backend:** Kişiselleştirilmiş ana sayfayı (örn: "Hoş Geldin [Kullanıcı Adı]", profil linki, öneri formu) render eder ve Frontend'e gönderir.
+                *   **Frontend:** Kişiselleştirilmiş sayfayı görüntüler. (Adım 3'e git)
+            *   **Hayır ise (Giriş Yapmamış):**
+                *   **Backend:** Standart ana sayfayı (Giriş/Kayıt ol butonları, öneri formu) render eder ve Frontend'e gönderir.
+                *   **Frontend:** Standart ana sayfayı görüntüler. (Adım 2'ye git)
+
+2.  **Kullanıcı Eylemi (Giriş Yapmamış):**
+    *   Kullanıcı ya "Giriş Yap/Kayıt Ol" seçeneğini tıklar ya da doğrudan öneri formunu kullanır.
+    *   **Karar:** Kullanıcı ne yapmak istiyor?
+        *   **Giriş Yap/Kayıt Ol:** Adım 4'e git.
+        *   **Öneri Formunu Kullan:** Adım 6'ya git (Ancak sonuçları kaydetme/favorilere ekleme seçeneği olmaz).
+
+3.  **Kullanıcı Eylemi (Giriş Yapmış):**
+    *   Kullanıcı öneri formunu kullanabilir, profilini/geçmişini görüntüleyebilir veya çıkış yapabilir.
+    *   **Karar:** Kullanıcı ne yapmak istiyor?
+        *   **Öneri Formunu Kullan:** Adım 6'ya git.
+        *   **Profil/Geçmiş/Favoriler:** Adım 5'e git.
+        *   **Çıkış Yap:** Adım 11'e git.
+
+4.  **Giriş/Kayıt İşlemi:**
+    *   **Frontend:** Giriş/Kayıt formunu (Email/Şifre veya Google ile Giriş seçenekleri) gösterir.
+    *   **Karar:** Hangi yöntem seçildi?
+        *   **Email ile Giriş/Kayıt:**
+            *   Kullanıcı bilgileri (email, şifre) girer ve gönderir.
+            *   **Frontend:** Bilgileri Backend'e (Django) gönderir.
+            *   **Backend:** Bilgileri alır. Kayıt ise yeni kullanıcı oluşturur, giriş ise bilgileri PostgreSQL'de doğrular.
+            *   **Karar:** İşlem Başarılı mı?
+                *   **Evet:** Oturum (session) oluşturur, kullanıcıyı tanımlayan bir cookie/token Frontend'e gönderir. Kullanıcıyı kişiselleştirilmiş ana sayfaya veya profiline yönlendirir. (Adım 3'e dön)
+                *   **Hayır:** Hata mesajını Frontend'e gönderir. Frontend kullanıcıya hatayı gösterir. (Bu adıma geri döner)
+        *   **Google ile Giriş:**
+            *   Kullanıcı "Google ile Giriş" butonuna tıklar.
+            *   **Frontend:** Kullanıcıyı Google'ın OAuth 2.0 kimlik doğrulama sayfasına yönlendirir.
+            *   Kullanıcı Google hesabıyla giriş yapar ve izin verir.
+            *   Google, kullanıcıyı siteye geri yönlendirir (callback URL) ve bir yetkilendirme kodu/token sağlar.
+            *   **Backend (Callback Handler):** Google'dan gelen kodu/token'ı alır.
+            *   **Backend:** Bu kod/token ile Google API'sine istek göndererek kullanıcının kimliğini (email vb.) doğrular ve alır.
+            *   **Backend:** Alınan email ile PostgreSQL'de kullanıcıyı arar.
+                *   **Karar:** Kullanıcı Veritabanında Var mı?
+                    *   **Evet:** Mevcut kullanıcı için oturum oluşturur. (Adım 4.Email.Evet'teki gibi devam eder)
+                    *   **Hayır:** Yeni kullanıcıyı Google'dan alınan bilgilerle PostgreSQL'e kaydeder, sonra oturum oluşturur. (Adım 4.Email.Evet'teki gibi devam eder)
+
+5.  **Profil/Geçmiş/Favoriler Görüntüleme (Giriş Yapmış Kullanıcı):**
+    *   Kullanıcı ilgili sayfaya gider (örn: /profil).
+    *   **Frontend:** Backend'den ilgili veriyi (geçmiş öneriler, favori yerler) talep eder.
+    *   **Backend:** Kullanıcının ID'si ile PostgreSQL veritabanını sorgular.
+    *   **Backend:** Sonuçları (geçmiş sorgular, Gemini yanıtları, favori lokasyonlar) alır ve formatlar.
+    *   **Backend:** Verileri Frontend'e gönderir.
+    *   **Frontend:** Verileri alır ve kullanıcıya liste/kart formatında gösterir. (Kullanıcı buradan eski bir öneriye tıklayıp detayını tekrar görebilir - Adım 9'a benzer bir akış tetiklenebilir).
+
+6.  **Tatil Yeri Önerisi Alma:**
+    *   Kullanıcı, Frontend'deki form aracılığıyla tercihlerini belirtir (örn: bütçe, ilgi alanları, tarih aralığı, seyahat tarzı vb.).
+    *   **Frontend (JavaScript):** Form verilerini toplar ve doğrular.
+    *   **Frontend:** Toplanan tercihleri bir API isteği ile Backend'e (Django) gönderir.
+
+7.  **Backend İşlemleri (Öneri):**
+    *   **Backend (Django):** Kullanıcı tercihlerini içeren isteği alır.
+    *   **Backend:** Bu tercihlere dayanarak Gemini API için uygun bir **prompt** (istek metni) oluşturur. *Örnek Prompt: "Deniz kenarında, orta bütçeli, aileler için uygun, Temmuz ayında gidilebilecek, sakin Avrupa tatil yerleri önerir misin? Yanıtında yer isimlerini ve kısa açıklamalarını liste halinde ver."*
+    *   **Backend:** Güvenli bir şekilde (API Key'i sunucu tarafında tutarak) Gemini API'sine oluşturulan prompt ile istek gönderir. **(Dikkat: API Key'i ASLA Frontend koduna gömmeyin veya doğrudan kullanıcıya göstermeyin!)**
+
+8.  **Gemini API Etkileşimi:**
+    *   **Backend:** Gemini API'sinden yanıtı bekler.
+    *   **Gemini API:** İsteği işler ve önerilen lokasyonların listesini, açıklamalarını içeren bir yanıt döndürür.
+    *   **Backend:** Gemini API'sinden gelen yanıtı alır.
+
+9.  **Sonuçların İşlenmesi ve Gönderilmesi:**
+    *   **Backend:** Gemini yanıtını ayrıştırır (parse eder), lokasyon isimlerini ve ilgili detayları çıkarır.
+    *   **Backend (Eğer Kullanıcı Giriş Yapmışsa):** Yapılan sorguyu ve alınan önerileri kullanıcının geçmişine (PostgreSQL) kaydeder.
+    *   **Backend:** Önerilen lokasyonların isimlerini (veya Gemini koordinat verdiyse koordinatları) ve açıklamalarını Frontend'in anlayacağı bir formatta (örn: JSON) hazırlar.
+    *   **Backend:** Hazırlanan veriyi API yanıtı olarak Frontend'e gönderir.
+
+10. **Sonuçların Gösterilmesi (Frontend):**
+    *   **Frontend (JavaScript):** Backend'den gelen öneri verilerini (JSON) alır.
+    *   **Frontend:** Önerileri (lokasyon isimleri, açıklamalar) sayfada liste veya kartlar halinde görüntüler.
+    *   **Frontend (JavaScript - Google Maps Entegrasyonu):**
+        *   Alınan lokasyon isimlerini kullanarak Google Maps JavaScript API'sine istek gönderir (Geocoding API ile isimden koordinat bulma veya doğrudan koordinat kullanma).
+        *   Google Maps API'sinden alınan koordinatlarla harita üzerinde işaretçiler (marker) oluşturur.
+        *   Haritayı ve işaretçileri sayfada görüntüler. İşaretçilere tıklandığında lokasyon adı gibi bilgiler gösterilebilir.
+    *   **Frontend (Eğer Kullanıcı Giriş Yapmışsa):** Her önerinin yanında "Favorilere Ekle" butonu gösterir.
+        *   Kullanıcı "Favorilere Ekle" butonuna tıklarsa:
+            *   **Frontend:** İlgili lokasyon bilgisini Backend'e gönderir.
+            *   **Backend:** Lokasyonu kullanıcının favorilerine (PostgreSQL) ekler.
+            *   **Backend:** Başarı durumunu Frontend'e bildirir.
+            *   **Frontend:** Butonun görünümünü günceller (örn: dolu kalp ikonu).
+
+11. **Çıkış Yapma (Giriş Yapmış Kullanıcı):**
+    *   Kullanıcı "Çıkış Yap" butonuna tıklar.
+    *   **Frontend:** Backend'e çıkış isteği gönderir.
+    *   **Backend:** Kullanıcının oturumunu (session) sonlandırır, ilgili cookie/token'ı geçersiz kılar.
+    *   **Backend:** Başarılı çıkış yanıtını Frontend'e gönderir.
+    *   **Frontend:** Kullanıcıyı standart ana sayfaya yönlendirir veya sayfayı yenileyerek giriş yapmamış duruma getirir. (Adım 1'e döner - Giriş Yapmamış durumu)
+
+**Bitiş Noktası:** Kullanıcı sekmeyi kapatır veya siteden ayrılır.

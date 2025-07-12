@@ -17,8 +17,8 @@ from django.shortcuts import render
 def get_unsplash_image(query, count=1):
     """Unsplash API'den verilen arama sorgusu için resim URL'leri döndürür"""
     try:
-        # Unsplash API Anahtarı
-        api_key = "HndBkDp-aWGW8lPIL2NwvPKOjelpit4yXV-KIgEhSe4" 
+        # Unsplash API Anahtarı - çevre değişkeninden al
+        api_key = os.getenv('UNSPLASH_API_KEY')
         
         # Sorgu için ek anahtar kelimeler ekle
         enhanced_query = f"{query} travel destination landmark"

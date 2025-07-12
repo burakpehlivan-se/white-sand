@@ -10,7 +10,7 @@ import os # Ortam değişkenlerinden API anahtarı almak için
 # genai.configure(api_key="YOUR_API_KEY")
 
 try:
-    api_key = "AIzaSyDkv-spVuy31T4yi-tSdq4iecyi-dfSJ4o"
+    api_key = os.getenv('GEMINI_API_KEY')
     if not api_key:
         raise ValueError("GOOGLE_API_KEY ortam değişkeni ayarlanmamış.")
     genai.configure(api_key=api_key)

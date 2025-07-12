@@ -1,0 +1,74 @@
+Ülke
+Konaklama türü
+	- Otel
+	- Pansiyon
+	- Butik otel
+	- Kiralık Villa/Ev (Airbnb benzeri)
+	- Apart Otel
+	- Hostel
+	- Kamp Alanı
+	- Karavan Parkı
+	- Tatil Köyü 
+	
+	
+Bütçe
+	- Ekonomik
+	- Orta Seviye
+	- Lüks
+	- sayısal bir aralık (örn: 0-1000 TL/€/,1001−3000TL/€/, 3000+ TL/€/$)
+	
+	
+Yapılmak istenen aktiviteler
+	- Plaj/Deniz
+	- Kayak/Snowboard
+	- Doğa Yürüyüşü/Trekking
+	- Tarihi Yerleri Gezme
+	- Müze/Sanat Galerisi
+	- Alışveriş
+	- Gece Hayatı
+	- Dinlenme/Spa,
+	- Macera Sporları
+	- Gastronomi Turları
+	- Fotoğrafçılık
+	- Festival/Etkinlikler
+	
+	
+Uzunluk -> takvim çıkacak kullanıcı başlangıç ve bitiş tarihlerini takvimden seçecek
+ulaşım sürelerinin içinde olup olmadığını soran bir checkbox
+
+
+Mevsim
+	- Yaz Tatili
+	- Kış Tatili
+	- ilkbahar/sonbahar 
+
+
+coğrafi özellikler
+	- Deniz/Sahil
+	- Dağlık
+	- Göl Kenarı
+	- Ormanlık
+	- Çöl
+	- Kırsal
+	- Şehir Merkezi
+	
+	
+Yemek Tercihleri
+	- Yerel Mutfağı Deneme -> Backend de kullanıcının seçtiği ülkeyle ilişkilendir ve promta öyle gönder.
+	- Deniz Ürünleri
+	- Vejetaryen
+	- Vegan
+	- Glutensiz
+	- İtalyan Mutfağı
+	- Asya Mutfağı
+	- Sokak Lezzetleri
+	- Fine Dining
+	
+	
+Eğlence Olanakları
+	- Canlı Müzik
+	- Tiyatro/Konser
+	- Tema Parkları
+	- Kültürel Etkinlikler (Festivaller, Gösteriler)
+	- Alışveriş Merkezleri
+	(Kullanıcı birden fazla seçim yapabilir veya "Fark Etmez" diyebilir.)

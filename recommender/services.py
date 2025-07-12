@@ -17,7 +17,7 @@ def get_gemini_completion(user_message):
     print(user_message)
 
     # Gemini API anahtarı
-    GEMINI_API_KEY = "AIzaSyDkv-spVuy31T4yi-tSdq4iecyi-dfSJ4o"
+    GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
     
     print("İşlem Başlatıldı. Gemini'den Dönüş Bekleniyor...")
     
