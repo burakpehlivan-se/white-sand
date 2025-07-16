@@ -67,11 +67,15 @@ Bu proje, kullanıcı tercihlerine göre Google Gemini API kullanarak kişiselle
 
 ## 📸 Ekran Görüntüleri
 
-![](screenshots/screenshot_3.jpg)
-
 ![](screenshots/screenshot_5.jpg)
 
 ![](screenshots/screenshot_4.jpg)
+
+![](screenshots/screenshot_1.png)
+
+![](screenshots/screenshot_2.png)
+
+![](screenshots/screenshot_3.png)
 
 ## 📝 Kullanım
 
