@@ -67,7 +67,11 @@ Bu proje, kullanıcı tercihlerine göre Google Gemini API kullanarak kişiselle
 
 ## 📸 Ekran Görüntüleri
 
-*Bu bölüme uygulama arayüzünden ekran görüntüleri ekleyebilirsiniz.*
+![](screenshots/screenshot_3.jpg)
+
+![](screenshots/screenshot_5.jpg)
+
+![](screenshots/screenshot_4.jpg)
 
 ## 📝 Kullanım
 
